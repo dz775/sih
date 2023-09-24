@@ -1,0 +1,153 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Rake Scheduling and Coal Stock Monitoring</title>
+    <style>
+        /* Basic CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Your Content Styles Go Here */
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #007BFF;
+            color: #fff;
+        }
+    </style>
+</head>
+<body> -->
+    <!-- <header>
+        <h1>Railway Rake Scheduling and Coal Stock Monitoring</h1>
+    </header> -->
+
+
+
+
+
+<!-- 
+
+<h1>Railway Sidings</h1>
+<ul>
+    {% for siding in sidings %}
+        <li>{{ siding.name }} - Location: {{ siding.location }} - MAX. Coal Stock: {{ siding.capacity }} - Currently available space - {{ siding.available_space }} - last_updated - {{ siding.last_updated }}</li>
+    {% endfor %}
+</ul>
+<script>
+    console.log("app");
+    console.log(__dirname);
+    console.log(app);
+    </script> -->
+    
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/Styles.css' %}">
+</head>
+    <body style="background-image: none; background-size: auto; background-attachment: fixed;">
+        <!-- Header Section -->
+        <header>
+            <div class="logo">
+                <h1> </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#"> </a></li>
+                    <li><a href="/map">Train Schedule</a></li>
+                    <li><a href="/railway-sidings">Mining Industry</a></li>
+                    
+                </ul>
+            </nav>
+            {% if user.is_authenticated %}
+            <div class="login">
+                <a href="/admin" class="login-button">Admin panel</a>
+            </div>
+            {% else %}
+            <div class="login">
+                <a href="/admin" class="login-button">Login</a>
+            </div>
+            {% endif %}
+        </header>
+        <!-- <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        </style> -->
+        <div style="max-width: 800px; margin: 20px auto; padding: 20px; border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <!-- Your content goes here -->
+            <p>Welcome to the Railway Rake Scheduling and Coal Stock Monitoring platform.
+            </p>
+            <!-- Add your UI elements and forms here -->
+            <!-- Add this section within the <div class="container"> element -->
+    
+    <h2>Coal Mines data</h2>
+    <table border="1">
+        <tr>
+            <th>Mine Name</th>
+            <th>Location</th>
+            <th>MAX. Coal Stock</th>
+            <th>Currently available space</th>
+            <th>last_updated</th>
+        </tr>
+        {% for siding in sidings %}
+        <tr>
+            <td>{{ siding.name }}</td>
+            <td>{{ siding.location }}</td>
+            <td>{{ siding.capacity }}</td>
+            <td>{{ siding.available_space }}</td>
+            <td>{{ siding.last_updated }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+        </div>
+    
+    
+    
+    
+    <section class="contact">
+        <h2>Contact Us</h2>
+        <p>Email: <a href="mailto:contact@yourwebsite.com">contact@yourwebsite.com</a></p>
+    </section>
+    </body>
+</html>

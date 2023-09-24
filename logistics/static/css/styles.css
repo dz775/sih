@@ -1,0 +1,90 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Apply background image */
+body {
+    background-image: url('coal.jpeg'); /* Replace with your image path */
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+}
+
+/* Header Styles */
+header {
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+}
+
+.logo {
+    flex: 1;
+    color: #333; /* Text color for the logo */
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333; /* Text color for navigation links */
+    font-weight: bold;
+}
+
+ .login a {
+    text-decoration: none;
+    background-color: #333; /* Background color for login button */
+    color: white; /* Text color for login button */
+padding: 20px 20px;
+    border-radius: 5px;
+}
+
+
+/* Quote Section Styles */
+.quote {
+    text-align: center;
+    margin: 20px;
+}
+
+/* Contact Section Styles */
+.contact {
+    background-color: #f4f4f4; /* Background color for contact section */
+    padding: 20px;
+    text-align: center;
+    position:absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.contact h2 {
+    color: #333; /* Text color for the contact section header */
+}
+
+.contact p {
+    font-size: 16px;
+    color: #555; /* Text color for the contact information */
+}
+
+/* Text Enlarging Effect */
+.contact:hover {
+    transform: scale(1.1); /* Increase the size by 10% */
+    transition: transform 0.3s ease;
+}
+
+
+blockquote {
+    font-style: italic;
+    font-size: 50px;
+    color: #555; /* Text color for the quote */
+}

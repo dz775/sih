@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/Styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+    <body style="background-image: none; background-size: auto; background-attachment: fixed;">
+        <!-- Header Section -->
+        <header>
+            <div class="logo">
+                <h1> </h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#"> </a></li>
+                    <li><a href="/map">Train Schedule</a></li>
+                    <li><a href="/railway-sidings">Mining Industry</a></li>
+                    
+                </ul>
+            </nav>
+            {% if user.is_authenticated %}
+            <div class="login">
+                <a href="/admin" class="login-button">Admin panel</a>
+            </div>
+            {% else %}
+            <div class="login">
+                <a href="/admin" class="login-button">Login</a>
+            </div>
+            {% endif %}
+        </header>
+        <style>
+            img.huechange { filter: hue-rotate(120deg); }
+        </style>            
+        <!-- <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        </style> -->
+        <div style="max-width: 800px; margin: 20px auto; padding: 20px; border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <div id="map" style="height: 400px;"></div>
+            {{ sidings|json_script:"sidings_json" }}
+            {{ railway|json_script:"railway_json" }}
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var map = L.map('map').setView([23.737686, 86.388098], 6);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                    }).addTo(map);
+                    var coalIcon = L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    // var rakeIcon = L.icon({
+                    //     // Define rake icon properties
+                    // });
+        
+                    const scriptElement = document.getElementById('sidings_json');
+                    const scriptContent = scriptElement.innerHTML;
+                    const sidingsList = JSON.parse(scriptContent);
+                    const scriptElement2 = document.getElementById('railway_json');
+                    const scriptContent2 = scriptElement2.innerHTML;
+                    const railwayList = JSON.parse(scriptContent2);
+                    var coalData = [
+                        // { name: 'coal 1', lat: 12.345, lng: 67.890 },
+                    ];
+                    var rakesData = [
+                        // { name: 'rakes 1', lat: 23.456, lng: 45.678 },
+                    ];
+                    sidingsList.forEach((siding) => {
+                        coalData.push({name:siding.name, lat:siding.location.split(',')[0], lng:siding.location.split(',')[1], location:siding.location, available_space:siding.available_space, last_updated: siding.last_updated});
+                    });
+                    railwayList.forEach((railway) => {
+                        rakesData.push({name:railway.name, lat:railway.location.split(',')[0], lng:railway.location.split(',')[1], location:railway.location});
+                    });
+                    var coalLayer = L.layerGroup();
+                    var rakesLayer = L.layerGroup();
+                    coalData.forEach(function (coal) {
+                        var marker = L.marker([coal.lat, coal.lng], {icon: coalIcon});
+                        marker.bindPopup(`<p>${coal.name}</p><p>location:${coal.location}</p><p>available_space:${coal.available_space}</p><p>last_updated:${coal.last_updated}</p>`)
+                        // marker._icon.classList.add("huechange");
+                        coalLayer.addLayer(marker);
+                        // marker._icon.style.filter = "hue-rotate(120deg)"
+                        // marker._icon.classList.add("huechange");
+                    });
+                    rakesData.forEach(function (rake) {
+                        var marker = L.marker([rake.lat, rake.lng]);
+                        marker.bindPopup(`<p>${rake.name}</p><p>location:${rake.location}</p><a onclick="myFunction('${rake.name}')" id='${rake.name}' href'#'>Schedule</a>`)
+                        rakesLayer.addLayer(marker);
+                    });
+                    var overlayMaps = {
+                        'coal': coalLayer,
+                        'rakes': rakesLayer,
+                    };
+                    L.control.layers(null, overlayMaps).addTo(map);
+                    // sidingsList.forEach((siding) => {
+                    //     L.marker([parseFloat(siding.location.split(',')[0]), parseFloat(siding.location.split(',')[1])]).addTo(map)
+                    //     .bindPopup(`<p>${siding.name}</p><p>location:${siding.location}</p><p>available_space:${siding.available_space}</p><p>last_updated:${siding.last_updated}</p>`)
+                    //     .openPopup();
+                    // });
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.click();
+                    });
+
+                });
+            
+                function myFunction(rake_name) {
+                    const url = `https://${window.location.hostname}/api/calculate`;
+                    const data = {
+                        rake_name: rake_name,
+                    };
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); 
+                    })
+                    .then(data => {
+                        console.log(data);
+                        alert(`Rake ${rake_name} has been assigned to ${data.name}`)
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+                }
+
+
+            </script>
+        
+        </div>
+    
+    
+    
+    
+    <section class="contact">
+        <h2>Contact Us</h2>
+        <p>Email: <a href="mailto:contact@yourwebsite.com">contact@yourwebsite.com</a></p>
+    </section>
+    </body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Example</title>
+    </head>
+<body>
+    <div id="map" style="height: 400px;"></div>
+    {{ sidings|json_script:"sidings_json" }}
+    {{ railway|json_script:"railway_json" }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('map').setView([23.737686, 86.388098], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+            var coalIcon = L.icon({
+                // Define coal icon properties
+            });
+            var rakeIcon = L.icon({
+                // Define rake icon properties
+            });
+
+            const scriptElement = document.getElementById('sidings_json');
+            const scriptContent = scriptElement.innerHTML;
+            const sidingsList = JSON.parse(scriptContent);
+            const scriptElement2 = document.getElementById('railway_json');
+            const scriptContent2 = scriptElement2.innerHTML;
+            const railwayList = JSON.parse(scriptContent2);
+            var coalData = [
+                // { name: 'coal 1', lat: 12.345, lng: 67.890 },
+            ];
+            var rakesData = [
+                // { name: 'rakes 1', lat: 23.456, lng: 45.678 },
+            ];
+            sidingsList.forEach((siding) => {
+                coalData.push({name:siding.name, lat:siding.location.split(',')[0], lng:siding.location.split(',')[1], location:siding.location, available_space:siding.available_space, last_updated: siding.last_updated});
+            });
+            railwayList.forEach((railway) => {
+                rakesData.push({name:railway.name, lat:railway.location.split(',')[0], lng:railway.location.split(',')[1], location:railway.location});
+            });
+            var coalLayer = L.layerGroup();
+            var rakesLayer = L.layerGroup();
+            coalData.forEach(function (coal) {
+                var marker = L.marker([coal.lat, coal.lng]);
+                marker.bindPopup(`<p>${coal.name}</p><p>location:${coal.location}</p><p>available_space:${coal.available_space}</p><p>last_updated:${coal.last_updated}</p>`)
+                coalLayer.addLayer(marker);
+            });
+            rakesData.forEach(function (rake) {
+                var marker = L.marker([rake.lat, rake.lng]);
+                marker.bindPopup(`<p>${rake.name}</p><p>location:${rake.location}</p>`)
+                rakesLayer.addLayer(marker);
+            });
+            var overlayMaps = {
+                'coal': coalLayer,
+                'rakes': rakesLayer,
+            };
+            L.control.layers(null, overlayMaps).addTo(map);
+            // sidingsList.forEach((siding) => {
+            //     L.marker([parseFloat(siding.location.split(',')[0]), parseFloat(siding.location.split(',')[1])]).addTo(map)
+            //     .bindPopup(`<p>${siding.name}</p><p>location:${siding.location}</p><p>available_space:${siding.available_space}</p><p>last_updated:${siding.last_updated}</p>`)
+            //     .openPopup();
+            // });
+        });
+    </script>
+</body>
+</html>

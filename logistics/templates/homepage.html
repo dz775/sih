@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/Styles.css' %}">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <h1> </h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#"> </a></li>
+                <li><a href="/map">Train Schedule</a></li>
+                <li><a href="/railway-sidings">Mining Industry</a></li>
+                
+            </ul>
+        </nav>
+        {% if user.is_authenticated %}
+        <div class="login">
+            <a href="/admin" class="login-button">Admin panel</a>
+        </div>
+        {% else %}
+        <div class="login">
+            <a href="/admin" class="login-button">Login</a>
+        </div>
+        {% endif %}
+    </header>
+
+    <!-- Quote Section -->
+    <section class="quote">
+        <blockquote>
+            "We are a very big mining country and historically have been exporters of raw minerals here."
+        </blockquote>
+    </section>
+
+    <!-- Contact Section -->
+
+
+
+    <!-- Content Sections, Footer, and Other Sections -->
+    <!-- Add your other website sections here -->
+
+
+<section class="contact">
+    <h2>Contact Us</h2>
+    <p>Email: <a href="mailto:contact@yourwebsite.com">contact@yourwebsite.com</a></p>
+</section>
+</body>
+</html>
